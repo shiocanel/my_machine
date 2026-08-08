@@ -1,2 +1,8 @@
 .env
 .venv/
+*.bin
+*.safetensors
+*.pt
+*.onnx
+*.parquet
+*.csv
