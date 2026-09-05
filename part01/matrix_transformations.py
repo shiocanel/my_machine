@@ -44,3 +44,18 @@ print(f"Shear (1,1) kx=1: ({sheared[0]:.1f}, {sheared[1]:.1f})")
 
 reflected = mat_vec_mul(reflection_y(), [2.0, 1.0])
 print(f"Reflect (2,1) across y: ({reflected[0]:.1f}, {reflected[1]:.1f})")
+
+R = rotation_2d(math.pi / 2)
+S = scaling_2d(2, 0.5)
+
+rotate_scale = mat_mul(S, R)
+scale_rotate = mat_mul(R, S)
+
+point = [1.0, 0.0]
+
+res1 = mat_vec_mul(rotate_scale, point)
+res2 = mat_vec_mul(scale_rotate, point)
+
+print(f"Rotate 90 then scale: ({res1[0]:.2f}, {res1[1]:.2f})")
+print(f"Scale then rotate 90: ({res2[0]:.2f}, {res2[1]:.2f})")
+print(f"Same? {res1 == res2}")
