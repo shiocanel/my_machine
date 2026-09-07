@@ -59,3 +59,66 @@ res2 = mat_vec_mul(scale_rotate, point)
 print(f"Rotate 90 then scale: ({res1[0]:.2f}, {res1[1]:.2f})")
 print(f"Scale then rotate 90: ({res2[0]:.2f}, {res2[1]:.2f})")
 print(f"Same? {res1 == res2}")
+
+# EIGENVALUES (2x2)
+
+# solves this: lambda^2 - (a+d)*lambda + (ad - bc) = 0
+def eigenvalues_2x2(matrix):
+    a, b = matrix[0]
+    c, d = matrix[1]
+
+    trace = a + b
+    det = a * d - b * c
+    discrimanant = trace ** 2 - 4 * det
+    
+    if discrimanant < 0:
+        real = trace / 2
+        imag = (-discrimanant) ** 0.5 / 2
+        return (complex(real, imag), complex(real, -imag))
+    
+    sqrt_disc = discrimanant ** 0.5
+    return ((trace + sqrt_disc) / 2, (trace - sqrt_disc) / 2)
+
+def eigenvector_2x2(matrix, eigenvalue):
+    a, b = matrix[0]
+    c, d = matrix[1]
+
+    if abs(b) > 1e-10:
+        v = [b, eigenvalue - a]
+    elif abs(c) > 1e-10:
+        v = [eigenvalue - d, c]
+    else:
+        if abs(a - eigenvalue) < 1e-10:
+            v = [1, 0]
+        else:
+            v = [0, 1]
+
+    mag = (v[0] ** 2 + v[1] ** 2) ** 0.5
+    return [v[0] / mag, v[1] / mag]
+
+A = [[2, 1], [1, 2]]
+vals = eigenvalues_2x2(A)
+
+print(f"Matrix: {A}")
+print(f"Eigenvalues: {vals[0]:.4f}, {vals[1]:.4f}")
+
+for val in vals:
+    vec = eigenvector_2x2(A, val)
+    result = mat_vec_mul(A, vec)
+    scaled = [val * vec[0], val * vec[1]]
+    print(f"  lambda={val:.1f}, v={[round(x.real, 4) + round(x.imag, 4) * 1j for x in vec]}")
+    print(f"    A@v = {[round(x.real, 4) + round(x.imag, 4) * 1j for x in result]}")
+    print(f"    l*v = {[round(x.real, 4) + round(x.imag, 4) * 1j for x in scaled]}")
+
+
+def det_2x2(matrix):
+    return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
+print(f"det(rotation 45) = {det_2x2(rotation_2d(math.pi/4)):.4f}")
+print(f"det(scale 2,3)   = {det_2x2(scaling_2d(2, 3)):.1f}")
+print(f"det(shear kx=1)  = {det_2x2(shearing_2d(1, 0)):.1f}")
+print(f"det(reflect y)   = {det_2x2(reflection_y()):.1f}")
+
+singular = [[1, 2], [2, 4]]
+print(f"det(singular)     = {det_2x2(singular):.1f}")
+print("Singular: columns are proportional, space collapses to a line.")
