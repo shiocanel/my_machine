@@ -32,3 +32,22 @@ reconstructed = V @ D @ np.linalg.inv(V)
 print(f"\nEigendecomposition A = V @ D @ V^-1:")
 print(f"Original:\n{B}")
 print(f"Reconstructed:\n{reconstructed}")
+
+
+### 3d Ratations using numpy
+
+def rotation_3d_z(theta):
+    c, s = np.cos(theta), np.sin(theta)
+    return np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+
+def rotation_3d_x(theta):
+    c, s = np.cos(theta), np.sin(theta)
+    return np.array([[1, 0, 0], [0, c, -s], [0, s, c]])
+
+point_3d = np.array([1.0, 0.0, 0.0])
+rotated_z = rotation_3d_z(np.pi / 2) @ point_3d
+rotated_x = rotation_3d_x(np.pi / 2) @ point_3d
+
+print(f"\n3D point: {point_3d}")
+print(f"Rotate 90 around z: {np.round(rotated_z, 4)}")
+print(f"Rotate 90 around x: {np.round(rotated_x, 4)}")
