@@ -64,3 +64,38 @@ def solve_pi(points):
     return pi
 
 print(f"pi = {solve_pi(1000)}")
+
+
+# Markov Chain Monte Carlo (MCMC)
+    # start with some x_0
+    # for t = 1, 2, .. T
+        # propose x' ~ q(x' | x_t)
+        # compute acceptance ratio: alpha = [p'(x) * q(x_t | x')] / [p(x_t) * q(x' | x_t)]
+        # accept with probability min(1, alpha)
+
+    # discard first B samples (burn-in)
+    # return remaining samples
+
+
+# Gibbs Sampling (MCMC algorithm)
+    # Input: initial state x = (x_1, ..., x_d), number of iterations T,
+    #        burn-in length B, and the full conditional distributions.
+    # for t = 1, 2, ..., T:
+        # for j = 1, 2, ..., d:
+            # Sample x_j from p(x_j | x_1, ..., x_(j-1), x_(j+1), ..., x_d)
+        # if t > B:
+            # Save the current state x as a sample.
+    # Return the saved states. Each coordinate is updated using the latest
+    # available values, producing samples from the joint distribution.
+        
+# Temperature Sampling (used in llms)
+    # p_i = exp(z_i / T) / sum(exp(z_j / T))
+
+    # T = 1.0: standard softmax (original distribution)
+    # T -> 0:  argmax (deterministic, always picks highest logit)
+    # T -> inf: uniform (all tokens equally likely)
+    # T < 1.0: sharpens the distribution (more confident, less diverse)
+    # T > 1.0: flattens the distribution (less confident, more diverse)
+
+# Top-k Sampling
+    
