@@ -1,32 +1,41 @@
 import math
 import random
 
+
 def l1_norm(x):
     return sum(abs(xi) for xi in x)
 
+
 def l2_norm(x):
-    return math.sqrt(sum(xi ** 2 for xi in x))
+    return math.sqrt(sum(xi**2 for xi in x))
+
 
 def lp_norm(x, p):
-    if p == float('inf'):
+    if p == float("inf"):
         return max(abs(xi) for xi in x)
     return sum(abs(xi) ** p for xi in x) ** (1 / p)
+
 
 def linf_norm(x):
     return max(abs(xi) for xi in x)
 
+
 def l1_distance(a, b):
     return sum(abs(ai - bi) for ai, bi in zip(a, b))
 
+
 def l2_distance(a, b):
     return math.sqrt(sum((ai - bi) ** 2 for ai, bi in zip(a, b)))
+
 
 def lp_distance(a, b, p):
     diff = [ai - bi for ai, bi in zip(a, b)]
     return lp_norm(diff, p)
 
+
 def dot_product(a, b):
     return sum(ai * bi for ai, bi in zip(a, b))
+
 
 def cosine_similarity(a, b):
     dot = dot_product(a, b)
@@ -36,8 +45,10 @@ def cosine_similarity(a, b):
         return 0.0
     return dot / (norm_a * norm_b)
 
+
 def cosine_distance(a, b):
     return 1.0 - cosine_similarity(a, b)
+
 
 def mahalanobis_distance(x, y, cov_matrix):
     n = len(x)
@@ -53,9 +64,13 @@ def mahalanobis_distance(x, y, cov_matrix):
     result = sum(temp[i] * diff[i] for i in range(n))
     return math.sqrt(max(0, result))
 
+
 def invert_matrix(matrix):
     n = len(matrix)
-    augmented = [row[:] + [1.0 if i == j else 0.0 for j in range(n) for i, row in enumerate(matrix)]]
+    augmented = [
+        row[:] + [1.0 if i == j else 0.0 for j in range(n)]
+        for i, row in enumerate(matrix)
+    ]
 
     for col in range(n):
         max_row = col
@@ -63,32 +78,35 @@ def invert_matrix(matrix):
             if abs(augmented[row][col]) > abs(augmented[max_row][col]):
                 max_row = row
             augmented[col], augmented[max_row] = augmented[max_row], augmented[col]
-        
+
         pivot = augmented[col][col]
         if abs(pivot) < 1e-12:
             raise ValueError("Matrix is singular or near -singular")
 
         for j in range(2 * n):
             augmented[col][j] /= pivot
-        
+
         for row in range(n):
             if row != col:
                 factor = augmented[row][col]
                 for j in range(2 * n):
                     augmented[row][j] -= factor * augmented[col][j]
 
-    return [row[n: ] for row in augmented]
+    return [row[n:] for row in augmented]
+
 
 def jaccard_similarity(set_a, set_b):
     if not set_a and not set_b:
         return 1.0
     intersection = len(set_a & set_b)
     union = len(set_a | set_b)
-    
+
     return intersection / union
+
 
 def jaccard_distance(set_a, set_b):
     return 1.0 - jaccard_similarity(set_a, set_b)
+
 
 def edit_distance(s1, s2):
     m, n = len(s1), len(s2)
@@ -109,15 +127,17 @@ def edit_distance(s1, s2):
 
     return dp[m][n]
 
+
 def kl_divergence(p, q):
     total = 0.0
     for pi, qi in zip(p, q):
         if pi > 0:
             if qi <= 0:
-                return float('inf')
+                return float("inf")
             total += pi * math.log(pi / qi)
 
     return total
+
 
 def wassertein_1d(p, q):
     assert len(p) == len(q), "Distributions must have the same number of bins"
@@ -133,6 +153,7 @@ def wassertein_1d(p, q):
 
     return sum(abs(cdf_p[i] - cdf_q[i]) for i in range(n))
 
+
 def compute_covariance(data):
     n = len(data)
     d = len(data[0])
@@ -143,8 +164,9 @@ def compute_covariance(data):
     for i in range(d):
         for j in range(d):
             cov[i][j] = sum(centered[k][i] * centered[k][j] for k in range(n)) / (n - 1)
-        
+
     return cov
+
 
 def normalize_vector(v):
     norm = l2_norm(v)
@@ -152,9 +174,10 @@ def normalize_vector(v):
         return v[:]
     return [vi / norm for vi in v]
 
+
 def find_nearest_neighbor(query, dataset, distance_fn, **kwargs):
     best_idx = 0
-    best_dist = float('inf')
+    best_dist = float("inf")
 
     for i, point in enumerate(dataset):
         d = distance_fn(query, point, **kwargs)
@@ -164,6 +187,7 @@ def find_nearest_neighbor(query, dataset, distance_fn, **kwargs):
 
     return best_idx, best_dist
 
+
 def find_k_nearest(query, dataset, distance_fn, k=5, **kwargs):
     distances = []
     for i, point in enumerate(dataset):
@@ -172,4 +196,3 @@ def find_k_nearest(query, dataset, distance_fn, k=5, **kwargs):
 
     distances.sort(key=lambda x: x[1])
     return distances[:k]
-
